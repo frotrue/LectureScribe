@@ -93,7 +93,24 @@ PyQt6 기반 데스크톱 UI에서 오디오 파일을 선택하면 로컬 PC에
 
 CPU 실행도 가능하지만, 큰 모델에서는 처리 시간이 길어질 수 있습니다.
 
+## 설치 방법
+
+일반 사용자는 GitHub Release에 올라간 Windows 설치 파일을 사용하는 것을 권장합니다.
+
+1. [LectureScribe 최신 릴리즈](https://github.com/frotrue/LectureScribe/releases/latest)에 접속합니다.
+2. Assets에서 `LectureScribe_Setup.exe`를 다운로드합니다.
+3. 설치 파일을 실행해 안내에 따라 설치합니다.
+4. 요약 기능을 사용하려면 실행 전에 `OPENAI_API_KEY` 환경 변수를 설정합니다.
+
+현재 릴리즈:
+
+- [LectureScribe v1.1.0](https://github.com/frotrue/LectureScribe/releases/tag/v1.1.0)
+- 설치 파일: [`LectureScribe_Setup.exe`](https://github.com/frotrue/LectureScribe/releases/download/v1.1.0/LectureScribe_Setup.exe)
+- SHA256: `7240577a7b6e5f4b6eda886946fa2d362a7de682df7f00d0c05d4bfd49a7582c`
+
 ## 환경 설정
+
+아래 절차는 소스 코드로 직접 실행하거나 배포 파일을 새로 빌드할 때 사용합니다.
 
 ### 1. 의존성 설치
 
