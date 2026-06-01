@@ -21,8 +21,8 @@ if hasattr(sys, '_MEIPASS'):
                 except Exception:
                     pass
 
-from PyQt6.QtCore import QThread, pyqtSignal
-from PyQt6.QtWidgets import (
+from PySide6.QtCore import QThread, Signal
+from PySide6.QtWidgets import (
     QApplication,
     QWidget,
     QVBoxLayout,
@@ -168,10 +168,10 @@ def default_summary_prompt() -> str:
 
 
 class SummaryWorker(QThread):
-    log = pyqtSignal(str)
-    progress = pyqtSignal(int)
-    finished_ok = pyqtSignal(str)
-    failed = pyqtSignal(str)
+    log = Signal(str)
+    progress = Signal(int)
+    finished_ok = Signal(str)
+    failed = Signal(str)
 
     def __init__(self, config: SummaryConfig):
         super().__init__()
@@ -267,11 +267,11 @@ class SummaryWorker(QThread):
 
 
 class TranscribeWorker(QThread):
-    log = pyqtSignal(str)
-    progress = pyqtSignal(int)
-    finished_ok = pyqtSignal(str)
-    failed = pyqtSignal(str)
-    summary_requested = pyqtSignal(str)
+    log = Signal(str)
+    progress = Signal(int)
+    finished_ok = Signal(str)
+    failed = Signal(str)
+    summary_requested = Signal(str)
 
     def __init__(self, config: TranscribeConfig):
         super().__init__()

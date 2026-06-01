@@ -7,5 +7,11 @@ requires-python = ">=3.11"
 dependencies = [
     "faster-whisper>=1.2.1",
     "openai>=2.38.0",
-    "pyqt6>=6.11.0",
+    "pyside6>=6.10.0",
+]
+
+[dependency-groups]
+dev = [
+    "nvidia-cublas-cu12>=12.9.2.10",
+    "pyinstaller>=6.20.0",
 ]

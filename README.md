@@ -2,7 +2,7 @@
 
 LectureScribe는 Faster-Whisper와 OpenAI API를 사용하는 로컬 강의 전사 및 요약 GUI 애플리케이션입니다.
 
-PyQt6 기반 데스크톱 UI에서 오디오 파일을 선택하면 로컬 PC에서 음성을 텍스트로 전사하고, 전사된 Markdown 파일을 OpenAI API로 요약해 Obsidian에서 바로 사용할 수 있는 노트를 생성합니다.
+PySide6 기반 데스크톱 UI에서 오디오 파일을 선택하면 로컬 PC에서 음성을 텍스트로 전사하고, 전사된 Markdown 파일을 OpenAI API로 요약해 Obsidian에서 바로 사용할 수 있는 노트를 생성합니다.
 
 ## 주요 기능
 
@@ -56,7 +56,7 @@ PyQt6 기반 데스크톱 UI에서 오디오 파일을 선택하면 로컬 PC에
 
 ```text
 ├── main.py
-│   └── PyQt6 GUI, 전사 작업자, 요약 작업자 구현
+│   └── PySide6 GUI, 전사 작업자, 요약 작업자 구현
 ├── pyproject.toml
 │   └── Python 패키지 메타데이터 및 의존성 정의
 ├── run_ui.sh
@@ -82,7 +82,7 @@ PyQt6 기반 데스크톱 UI에서 오디오 파일을 선택하면 로컬 PC에
 
 - `faster-whisper`
 - `openai`
-- `pyqt6`
+- `pyside6`
 
 ### GPU 사용 시
 
@@ -289,6 +289,12 @@ GPU 실행에서 DLL 로딩 오류가 나면 다음을 확인하세요.
 
 ## 라이선스
 
-프로젝트 코드의 라이선스는 별도 라이선스 파일이 추가되기 전까지 저장소 정책을 따릅니다.
+이 프로젝트의 소스 코드는 [MIT License](./LICENSE)를 따릅니다.
 
-번들로 포함되는 `ffmpeg`와 `ffprobe`는 FFmpeg 프로젝트의 라이선스를 따릅니다. 배포 시 FFmpeg 라이선스 조건을 함께 확인하세요.
+제3자 구성요소와 번들 바이너리는 각 프로젝트의 라이선스를 따릅니다.
+
+- `PySide6`: LGPLv3/GPLv3 또는 Qt Commercial License
+- `ffmpeg`, `ffprobe`: FFmpeg 프로젝트 라이선스
+- `faster-whisper`, `ctranslate2`, `openai` 등 Python 의존성: 각 패키지 라이선스
+
+배포 시에는 포함된 제3자 구성요소의 라이선스 조건을 함께 확인하세요.
