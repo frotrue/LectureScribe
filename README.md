@@ -18,17 +18,53 @@ PyQt6 기반 데스크톱 UI에서 오디오 파일을 선택하면 로컬 PC에
 
 ```text
 .
-├── bin/
-│   ├── ffmpeg.exe
-│   └── ffprobe.exe
-├── dist/
-├── input/
-├── output/
+├── .gitignore
+├── .python-version
+├── LectureScribe.spec
+├── README.md
+├── cuda_test.py
 ├── main.py
 ├── pyproject.toml
 ├── run_ui.sh
 ├── setup.iss
+└── uv.lock
+```
+
+다음 항목은 로컬 실행, 빌드, 입력/출력 과정에서 생성되며 `.gitignore`로 Git 추적에서 제외됩니다.
+
+```text
+.
+├── .venv/
+├── __pycache__/
+├── bin/
+│   ├── ffmpeg.exe
+│   └── ffprobe.exe
+├── build/
+├── dist/
+│   ├── LectureScribe/
+│   └── LectureScribe_Setup.exe
+├── input/
+├── output/
+├── wheels/
+├── *.egg-info
+├── *.pyc
+├── *.pyo
+└── *.zip
+```
+
+핵심 파일 역할은 다음과 같습니다.
+
+```text
+├── main.py
+│   └── PyQt6 GUI, 전사 작업자, 요약 작업자 구현
+├── pyproject.toml
+│   └── Python 패키지 메타데이터 및 의존성 정의
+├── run_ui.sh
+│   └── WSL/Linux용 실행 보조 스크립트
+├── setup.iss
+│   └── Inno Setup 설치 파일 빌드 스크립트
 └── LectureScribe.spec
+    └── PyInstaller 배포 폴더 빌드 스펙
 ```
 
 ## 요구사항
