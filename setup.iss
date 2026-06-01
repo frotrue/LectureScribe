@@ -4,7 +4,7 @@
 ; Requires Inno Setup (https://jrsoftware.org/isdl.php) to compile.
 
 #define MyAppName "LectureScribe"
-#define MyAppVersion "1.1.1"
+#define MyAppVersion "1.1.2"
 #define MyAppPublisher "frotrue"
 #define MyAppExeName "LectureScribe.exe"
 

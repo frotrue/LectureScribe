@@ -375,7 +375,7 @@ wheels = [
 
 [[package]]
 name = "lecture-scribe"
-version = "1.1.1"
+version = "1.1.2"
 source = { virtual = "." }
 dependencies = [
     { name = "faster-whisper" },

@@ -1,6 +1,7 @@
 import os
 import sys
 import subprocess
+import shutil
 from pathlib import Path
 from dataclasses import dataclass
 from typing import Optional
@@ -137,6 +138,69 @@ def get_unique_path(path: Path) -> Path:
         if not new_path.exists():
             return new_path
         counter += 1
+
+
+FASTER_WHISPER_REPOS = {
+    "large-v3-turbo": "mobiuslabsgmbh/faster-whisper-large-v3-turbo",
+    "large-v3": "Systran/faster-whisper-large-v3",
+    "medium": "Systran/faster-whisper-medium",
+    "small": "Systran/faster-whisper-small",
+    "base": "Systran/faster-whisper-base",
+}
+
+
+def materialize_faster_whisper_model(model_name: str, log=None) -> str:
+    """Return a real-file model directory, avoiding Windows HF snapshot symlinks."""
+    model_path = Path(model_name).expanduser()
+    if model_path.exists():
+        return str(model_path)
+
+    repo_id = FASTER_WHISPER_REPOS.get(model_name, model_name if "/" in model_name else None)
+    if not repo_id:
+        return model_name
+
+    from huggingface_hub import snapshot_download
+
+    if log:
+        log(f"모델 캐시 확인 중: {repo_id}")
+
+    snapshot_dir = Path(snapshot_download(repo_id))
+    materialized_dir = (
+        Path.home()
+        / ".cache"
+        / "lecture-scribe"
+        / "models"
+        / repo_id.replace("/", "--")
+    )
+    materialized_dir.mkdir(parents=True, exist_ok=True)
+
+    for source in snapshot_dir.iterdir():
+        if not source.is_file():
+            continue
+
+        resolved_source = source.resolve()
+        destination = materialized_dir / source.name
+        source_size = resolved_source.stat().st_size
+
+        if destination.exists() and destination.stat().st_size == source_size:
+            continue
+
+        if destination.exists():
+            destination.unlink()
+
+        try:
+            os.link(resolved_source, destination)
+        except OSError:
+            shutil.copy2(resolved_source, destination)
+
+    model_file = materialized_dir / "model.bin"
+    if not model_file.exists() or model_file.stat().st_size == 0:
+        raise RuntimeError(f"모델 파일을 준비하지 못했습니다: {model_file}")
+
+    if log:
+        log(f"모델 로컬 경로: {materialized_dir}")
+
+    return str(materialized_dir)
 
 
 def default_summary_prompt() -> str:
@@ -299,8 +363,10 @@ class TranscribeWorker(QThread):
             else:
                 self.log.emit("오디오 길이를 가져오지 못했습니다. 진행률은 대략적으로 표시됩니다.")
 
+            model_path = materialize_faster_whisper_model(cfg.model_name, self.log.emit)
+
             model = WhisperModel(
-                cfg.model_name,
+                model_path,
                 device=cfg.device,
                 compute_type=cfg.compute_type,
             )

@@ -106,9 +106,9 @@ CPU 실행도 가능하지만, 큰 모델에서는 처리 시간이 길어질 �
 
 현재 릴리즈:
 
-- [LectureScribe v1.1.1](https://github.com/frotrue/LectureScribe/releases/tag/v1.1.1)
-- 설치 파일: [`LectureScribe_Setup.exe`](https://github.com/frotrue/LectureScribe/releases/download/v1.1.1/LectureScribe_Setup.exe)
-- SHA256: `bd4e7e44767bb3a97e5cf53715fb5d07923e16cbd13854f6d79e817c1aadcca1`
+- [LectureScribe v1.1.2](https://github.com/frotrue/LectureScribe/releases/tag/v1.1.2)
+- 설치 파일: [`LectureScribe_Setup.exe`](https://github.com/frotrue/LectureScribe/releases/download/v1.1.2/LectureScribe_Setup.exe)
+- SHA256: `9fc1f973acda21efa95b87253f4f50e5b17d41fbe572586db313c5578748542b`
 
 ## 환경 설정
 
