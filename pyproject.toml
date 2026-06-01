@@ -1,7 +1,7 @@
 [project]
-name = "whisper-local"
-version = "0.1.0"
-description = "Add your description here"
+name = "lecture-scribe"
+version = "1.1.0"
+description = "Local lecture transcription and OpenAI-powered Markdown summarization GUI"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [

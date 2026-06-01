@@ -380,14 +380,14 @@ class WhisperUI(QWidget):
         super().__init__()
         self.transcribe_worker: Optional[TranscribeWorker] = None
         self.summary_worker: Optional[SummaryWorker] = None
-        self.setWindowTitle("Faster Whisper Lecture Transcriber + OpenAI Summary")
+        self.setWindowTitle("LectureScribe")
         self.resize(920, 760)
         self.build_ui()
 
     def build_ui(self):
         root = QVBoxLayout()
 
-        title = QLabel("Faster Whisper 강의 전사 + API 요약 UI")
+        title = QLabel("LectureScribe")
         title.setStyleSheet("font-size: 22px; font-weight: bold;")
         root.addWidget(title)
 
