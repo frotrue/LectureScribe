@@ -4,7 +4,7 @@
 ; Requires Inno Setup (https://jrsoftware.org/isdl.php) to compile.
 
 #define MyAppName "LectureScribe"
-#define MyAppVersion "1.1.0"
+#define MyAppVersion "1.1.1"
 #define MyAppPublisher "frotrue"
 #define MyAppExeName "LectureScribe.exe"
 
@@ -36,6 +36,8 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 [Files]
 ; Copy all files and folders recursively from the PyInstaller output directory
 Source: "dist\LectureScribe\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "LICENSE"; DestDir: "{app}"; Flags: ignoreversion
+Source: "THIRD_PARTY_NOTICES.md"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]

@@ -21,7 +21,9 @@ PySide6 기반 데스크톱 UI에서 오디오 파일을 선택하면 로컬 PC�
 ├── .gitignore
 ├── .python-version
 ├── LectureScribe.spec
+├── LICENSE
 ├── README.md
+├── THIRD_PARTY_NOTICES.md
 ├── cuda_test.py
 ├── main.py
 ├── pyproject.toml
@@ -104,9 +106,9 @@ CPU 실행도 가능하지만, 큰 모델에서는 처리 시간이 길어질 �
 
 현재 릴리즈:
 
-- [LectureScribe v1.1.0](https://github.com/frotrue/LectureScribe/releases/tag/v1.1.0)
-- 설치 파일: [`LectureScribe_Setup.exe`](https://github.com/frotrue/LectureScribe/releases/download/v1.1.0/LectureScribe_Setup.exe)
-- SHA256: `7240577a7b6e5f4b6eda886946fa2d362a7de682df7f00d0c05d4bfd49a7582c`
+- [LectureScribe v1.1.1](https://github.com/frotrue/LectureScribe/releases/tag/v1.1.1)
+- 설치 파일: [`LectureScribe_Setup.exe`](https://github.com/frotrue/LectureScribe/releases/download/v1.1.1/LectureScribe_Setup.exe)
+- SHA256: `bd4e7e44767bb3a97e5cf53715fb5d07923e16cbd13854f6d79e817c1aadcca1`
 
 ## 환경 설정
 
@@ -294,7 +296,7 @@ GPU 실행에서 DLL 로딩 오류가 나면 다음을 확인하세요.
 제3자 구성요소와 번들 바이너리는 각 프로젝트의 라이선스를 따릅니다.
 
 - `PySide6`: LGPLv3/GPLv3 또는 Qt Commercial License
-- `ffmpeg`, `ffprobe`: FFmpeg 프로젝트 라이선스
+- `ffmpeg`, `ffprobe`: 현재 번들된 Gyan.dev essentials build는 GPLv3 이상
 - `faster-whisper`, `ctranslate2`, `openai` 등 Python 의존성: 각 패키지 라이선스
 
-배포 시에는 포함된 제3자 구성요소의 라이선스 조건을 함께 확인하세요.
+자세한 제3자 라이선스 고지는 [THIRD_PARTY_NOTICES.md](./THIRD_PARTY_NOTICES.md)를 확인하세요.
