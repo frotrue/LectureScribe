@@ -38,9 +38,9 @@ LectureScribe는 Faster-Whisper 기반 로컬 강의 전사와 OpenAI API 기반
 
 현재 릴리즈:
 
-- [LectureScribe v1.1.4](https://github.com/frotrue/LectureScribe/releases/tag/v1.1.4)
-- 설치 파일: [`LectureScribe_Setup.exe`](https://github.com/frotrue/LectureScribe/releases/download/v1.1.4/LectureScribe_Setup.exe)
-- SHA256: `466D39A609F6EB6A4253696CB2F1D2D28F71E11F48E061010461755CC71FAB68`
+- [LectureScribe v1.1.5](https://github.com/frotrue/LectureScribe/releases/tag/v1.1.5)
+- 설치 파일: [`LectureScribe_Setup.exe`](https://github.com/frotrue/LectureScribe/releases/download/v1.1.5/LectureScribe_Setup.exe)
+- SHA256: `EE1B16C26CEBF90481A1D4EED9CECA49A34AF3F3AE7847A56950799E7334B791`
 
 ## 개발 환경 실행
 

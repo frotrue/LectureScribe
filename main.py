@@ -1,7 +1,6 @@
 import os
 import sys
 import subprocess
-import shutil
 from pathlib import Path
 from dataclasses import dataclass
 from typing import Optional
@@ -182,7 +181,7 @@ FASTER_WHISPER_REPOS = {
 
 
 def materialize_faster_whisper_model(model_name: str, log=None) -> str:
-    """Return a real-file model directory, avoiding Windows HF snapshot symlinks."""
+    """Return a local model directory without walking HF snapshot reparse points."""
     model_path = Path(model_name).expanduser()
     if model_path.exists():
         return str(model_path)
@@ -196,7 +195,6 @@ def materialize_faster_whisper_model(model_name: str, log=None) -> str:
     if log:
         log(f"모델 캐시 확인 중: {repo_id}")
 
-    snapshot_dir = Path(snapshot_download(repo_id))
     materialized_dir = (
         Path.home()
         / ".cache"
@@ -206,33 +204,22 @@ def materialize_faster_whisper_model(model_name: str, log=None) -> str:
     )
     materialized_dir.mkdir(parents=True, exist_ok=True)
 
-    for source in snapshot_dir.iterdir():
-        if not source.is_file():
-            continue
+    downloaded_dir = Path(
+        snapshot_download(
+            repo_id,
+            local_dir=materialized_dir,
+            ignore_patterns=[".git", ".git/*"],
+        )
+    )
 
-        resolved_source = source.resolve()
-        destination = materialized_dir / source.name
-        source_size = resolved_source.stat().st_size
-
-        if destination.exists() and destination.stat().st_size == source_size:
-            continue
-
-        if destination.exists():
-            destination.unlink()
-
-        try:
-            os.link(resolved_source, destination)
-        except OSError:
-            shutil.copy2(resolved_source, destination)
-
-    model_file = materialized_dir / "model.bin"
+    model_file = downloaded_dir / "model.bin"
     if not model_file.exists() or model_file.stat().st_size == 0:
         raise RuntimeError(f"모델 파일을 준비하지 못했습니다: {model_file}")
 
     if log:
-        log(f"모델 로컬 경로: {materialized_dir}")
+        log(f"모델 로컬 경로: {downloaded_dir}")
 
-    return str(materialized_dir)
+    return str(downloaded_dir)
 
 
 def default_summary_prompt() -> str:
