@@ -29,18 +29,18 @@ LectureScribe는 Faster-Whisper 기반 로컬 강의 전사와 OpenAI API 기반
 
 ## 설치
 
-일반 사용자는 GitHub Release에서 Windows 배포 파일을 내려받아 사용하는 것을 권장합니다.
+일반 사용자는 GitHub Release에서 Windows 설치 파일을 내려받아 사용하는 것을 권장합니다.
 
 1. [LectureScribe 최신 릴리즈](https://github.com/frotrue/LectureScribe/releases/latest)에 접속합니다.
-2. Assets에서 `LectureScribe-v1.1.3-win-x64.zip`을 다운로드합니다.
-3. 압축을 풀고 `LectureScribe.exe`를 실행합니다.
+2. Assets에서 `LectureScribe_Setup.exe`를 다운로드합니다.
+3. 설치 파일을 실행합니다.
 4. 요약 기능을 사용할 경우에만 실행 전에 `OPENAI_API_KEY` 환경 변수를 설정합니다.
 
 현재 릴리즈:
 
 - [LectureScribe v1.1.3](https://github.com/frotrue/LectureScribe/releases/tag/v1.1.3)
-- Windows ZIP: [`LectureScribe-v1.1.3-win-x64.zip`](https://github.com/frotrue/LectureScribe/releases/download/v1.1.3/LectureScribe-v1.1.3-win-x64.zip)
-- SHA256: `3263BE144C10F9884F846BB40477D39C415C14DEFDEEC2993CBE13C6DE5DDFC3`
+- 설치 파일: [`LectureScribe_Setup.exe`](https://github.com/frotrue/LectureScribe/releases/download/v1.1.3/LectureScribe_Setup.exe)
+- SHA256: `CD6160F546A8B5355C4123741DBE36CC8E0CA837D256416447FCF7B3B7D6EBDC`
 
 ## 개발 환경 실행
 
