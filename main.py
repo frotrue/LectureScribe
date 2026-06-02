@@ -6,6 +6,24 @@ from pathlib import Path
 from dataclasses import dataclass
 from typing import Optional
 
+
+class NullTextStream:
+    def write(self, text):
+        return len(text) if text is not None else 0
+
+    def flush(self):
+        pass
+
+    def isatty(self):
+        return False
+
+
+if sys.stdout is None:
+    sys.stdout = NullTextStream()
+if sys.stderr is None:
+    sys.stderr = NullTextStream()
+
+
 # PyInstaller 패키징 환경에서 ffmpeg/ffprobe 및 CUDA DLL 경로를 동적으로 추가
 if hasattr(sys, '_MEIPASS'):
     bundle_dir = Path(sys._MEIPASS)
