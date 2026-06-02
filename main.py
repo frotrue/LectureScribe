@@ -54,6 +54,10 @@ class TranscribeConfig:
     language: str
     beam_size: int
     vad_filter: bool
+    output_txt: bool
+    output_md: bool
+    output_srt: bool
+    auto_summary: bool
     summary_model: str
     summary_prompt: str
     chunk_chars: int
@@ -75,6 +79,16 @@ def srt_time(seconds: float) -> str:
     m = (seconds % 3600) // 60
     s = seconds % 60
     return f"{h:02}:{m:02}:{s:02},{millis:03}"
+
+
+def txt_timestamp(seconds: float) -> str:
+    seconds = int(seconds)
+    h = seconds // 3600
+    m = (seconds % 3600) // 60
+    s = seconds % 60
+    if h:
+        return f"{h:02}:{m:02}:{s:02}"
+    return f"{m:02}:{s:02}"
 
 
 def get_audio_duration_seconds(audio_path: Path) -> Optional[float]:
@@ -385,27 +399,14 @@ class TranscribeWorker(QThread):
             self.log.emit(f"감지 언어: {info.language}, 확률: {info.language_probability:.2f}")
 
             base_name = cfg.audio_path.stem
-            original_md_path = get_unique_path(cfg.output_dir / f"{base_name}_원본.md")
-
-            md_lines = []
-
-            md_lines.append("# 강의 전사")
-            md_lines.append("")
-            md_lines.append(f"- 파일: `{cfg.audio_path.name}`")
-            md_lines.append(f"- 모델: `{cfg.model_name}`")
-            md_lines.append(f"- 장치: `{cfg.device}`")
-            md_lines.append(f"- compute_type: `{cfg.compute_type}`")
-            md_lines.append(f"- 언어: `{info.language}`")
-            md_lines.append(f"- 언어 확률: `{info.language_probability:.2f}`")
-            md_lines.append("")
-            md_lines.append("## 전사본")
-            md_lines.append("")
-
+            transcript_entries = []
             last_percent = 0
+            cancelled = False
 
             for i, segment in enumerate(segments, start=1):
                 if self._cancel_requested:
                     self.log.emit("사용자 요청으로 중단했습니다.")
+                    cancelled = True
                     break
 
                 text = segment.text.strip()
@@ -415,9 +416,14 @@ class TranscribeWorker(QThread):
                 start_min = int(segment.start // 60)
                 start_sec = int(segment.start % 60)
                 timestamp = f"[{start_min:02}:{start_sec:02}]"
-
-                md_lines.append(f"{timestamp} {text}")
-                md_lines.append("")
+                transcript_entries.append(
+                    {
+                        "start": segment.start,
+                        "end": segment.end,
+                        "timestamp": timestamp,
+                        "text": text,
+                    }
+                )
 
                 if duration and duration > 0:
                     percent = min(99, int((segment.end / duration) * 100))
@@ -428,14 +434,55 @@ class TranscribeWorker(QThread):
                 if i % 10 == 0:
                     self.log.emit(f"진행 중... 마지막 구간 {timestamp}")
 
-            original_md_path.write_text("\n".join(md_lines), encoding="utf-8")
-            self.log.emit(f"원본 저장: {original_md_path}")
+            original_md_path: Optional[Path] = None
+
+            if cfg.output_md:
+                original_md_path = get_unique_path(cfg.output_dir / f"{base_name}_원본.md")
+                md_lines = [
+                    "# 강의 전사",
+                    "",
+                    f"- 파일: `{cfg.audio_path.name}`",
+                    f"- 모델: `{cfg.model_name}`",
+                    f"- 장치: `{cfg.device}`",
+                    f"- compute_type: `{cfg.compute_type}`",
+                    f"- 언어: `{info.language}`",
+                    f"- 언어 확률: `{info.language_probability:.2f}`",
+                    "",
+                    "## 전사본",
+                    "",
+                ]
+                for entry in transcript_entries:
+                    md_lines.append(f"{entry['timestamp']} {entry['text']}")
+                    md_lines.append("")
+                original_md_path.write_text("\n".join(md_lines), encoding="utf-8")
+                self.log.emit(f"Markdown 저장: {original_md_path}")
+
+            if cfg.output_txt:
+                original_txt_path = get_unique_path(cfg.output_dir / f"{base_name}_원본.txt")
+                txt_lines = [
+                    f"{txt_timestamp(entry['start'])} {entry['text']}"
+                    for entry in transcript_entries
+                ]
+                original_txt_path.write_text("\n".join(txt_lines) + "\n", encoding="utf-8")
+                self.log.emit(f"TXT 저장: {original_txt_path}")
+
+            if cfg.output_srt:
+                original_srt_path = get_unique_path(cfg.output_dir / f"{base_name}_원본.srt")
+                srt_blocks = []
+                for idx, entry in enumerate(transcript_entries, start=1):
+                    srt_blocks.append(
+                        f"{idx}\n"
+                        f"{srt_time(entry['start'])} --> {srt_time(entry['end'])}\n"
+                        f"{entry['text']}"
+                    )
+                original_srt_path.write_text("\n\n".join(srt_blocks) + "\n", encoding="utf-8")
+                self.log.emit(f"SRT 저장: {original_srt_path}")
 
             self.progress.emit(100)
             self.finished_ok.emit(str(cfg.output_dir))
 
-            # 전사 끝나면 무조건 요약 시작
-            self.summary_requested.emit(str(original_md_path))
+            if cfg.auto_summary and original_md_path is not None and not cancelled:
+                self.summary_requested.emit(str(original_md_path))
 
         except Exception as e:
             self.failed.emit(str(e))
@@ -509,11 +556,12 @@ class WhisperUI(QWidget):
         model_layout.addRow("모델", self.model_combo)
 
         self.device_combo = QComboBox()
-        self.device_combo.addItems(["cuda", "cpu"])
+        self.device_combo.addItems(["cpu", "cuda"])
         model_layout.addRow("장치", self.device_combo)
 
         self.compute_combo = QComboBox()
         self.compute_combo.addItems(["float16", "int8_float16", "int8", "float32"])
+        self.compute_combo.setCurrentText("int8")
         model_layout.addRow("compute_type", self.compute_combo)
 
         self.language_combo = QComboBox()
@@ -690,6 +738,19 @@ class WhisperUI(QWidget):
             QMessageBox.warning(self, "오류", f"오디오 파일이 없습니다:\n{audio_path}")
             return None
 
+        output_txt = self.txt_check.isChecked()
+        output_md = self.md_check.isChecked()
+        output_srt = self.srt_check.isChecked()
+        auto_summary = self.auto_summary_check.isChecked()
+
+        if not (output_txt or output_md or output_srt):
+            QMessageBox.warning(self, "오류", "출력 형식을 하나 이상 선택하세요.")
+            return None
+
+        if auto_summary and not output_md:
+            QMessageBox.warning(self, "오류", "자동 요약을 사용하려면 Markdown 출력이 필요합니다.")
+            return None
+
         output_path = Path(output_text) if output_text else audio_path.parent
 
         language = self.language_combo.currentText()
@@ -705,6 +766,10 @@ class WhisperUI(QWidget):
             language=language,
             beam_size=int(self.beam_combo.currentText()),
             vad_filter=self.vad_check.isChecked(),
+            output_txt=output_txt,
+            output_md=output_md,
+            output_srt=output_srt,
+            auto_summary=auto_summary,
             summary_model=self.summary_model_combo.currentText().strip(),
             summary_prompt=self.prompt_box.toPlainText().strip(),
             chunk_chars=self.chunk_spin.value(),
@@ -742,11 +807,11 @@ class WhisperUI(QWidget):
         if cfg is None:
             return
 
-        if not os.getenv("OPENAI_API_KEY"):
+        if cfg.auto_summary and not os.getenv("OPENAI_API_KEY"):
             QMessageBox.warning(
                 self,
                 "오류",
-                "OPENAI_API_KEY 환경변수가 설정되어 있지 않습니다."
+                "자동 요약을 사용하려면 OPENAI_API_KEY 환경변수가 필요합니다."
             )
             return
 

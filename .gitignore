@@ -8,6 +8,9 @@ wheels/
 
 # Virtual environments
 .venv
+.env
+*.env
+.env.*
 
 # Large binaries and setup files
 bin/
